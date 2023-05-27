@@ -65,7 +65,20 @@ The well known SQL works:
 
 ```SQL
   -- the most 10 recents samples:
-  select * from stocks_real_time order by time desc limit 10;
+  SELECT * FROM stocks_real_time ORDER BY time DESC LIMIT 10;
   -- built in postgresql functions to know the periods of the data from this dataset
-  select time::date as iso_date from stocks_real_time s group by s.time::date; 
+  SELECT time::date as iso_date FROM stocks_real_time s GROUP BY s.time::date;
+  -- from the previous four days
+  SELECT * FROM stocks_real_time srt WHERE time > now() - INTERVAL '4 days' LIMIT 10;
+
+  -- avg trade price for Apple from the last four days
+  SELECT
+    avg(price)
+  FROM stocks_real_time srt
+  JOIN company c ON c.symbol = srt.symbol
+  WHERE c.name = 'Apple' AND time > now() - INTERVAL '4 days';
 ```
+
+Timescale SQL functions:
+
+

@@ -56,11 +56,11 @@
 
 </details>
 
-## Querying
+## Querying :scrol:
 
 > Remember to be connected into container psql or some other pgsql client !!! `docker exec -it timescaledb psql -U postgres -h localhost -d stock_exchange`
 
-The well known SQL works:
+### The well known SQL still works
 
 
 ```SQL
@@ -79,6 +79,27 @@ The well known SQL works:
   WHERE c.name = 'Apple' AND time > now() - INTERVAL '4 days';
 ```
 
-Timescale SQL functions:
+### Timescale SQL functions
 
+- There are a lot of [custom sql functions](https://docs.timescale.com/api/latest/hyperfunctions/) to perform time-series analysis.
 
+- Using [first](https://docs.timescale.com/api/latest/hyperfunctions/first/) and [last](https://docs.timescale.com/api/latest/hyperfunctions/last/) to find the first and last trading price:
+
+```SQL
+  SELECT symbol, first(price, time), last(price, time)
+  FROM stocks_real_time srt
+  WHERE time > now () - INTERVAL '3 days'
+  GROUP BY symbol -- since it is an aggregation function its needs a "GROUP BY" statement
+  ORDER BY symbol;
+```
+
+- Using `time_bucket()` to bucket values based on an interval. More on [docs](https://docs.timescale.com/api/latest/hyperfunctions/time_bucket/). In this case to calculate the average daily price of each trading symbol over the last week:
+
+```SQL
+  SELECT time_bucket('1 day', time) AS bucket, symbol, avg(price)
+  FROM stocks_real_time srt 
+  WHERE time > now() - INTERVAL '1 week'
+  GROUP BY bucket, symbol
+  ORDER BY bucket, symbol
+  LIMIT 10;
+```

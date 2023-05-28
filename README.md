@@ -103,3 +103,81 @@
   ORDER BY bucket, symbol
   LIMIT 10;
 ```
+
+## Continuous Aggregate :pencil2:
+
+Calculating aggregates(average price per day, maximum CPU last 5 minutes and so on) can be computationally intensive. Some reasons for that:
+
+- Aggregating _large amounts of data_ often requires a lot of calculation time.
+- Ingesting new data requires new aggregation calculations which can effect `ingest rate` and `aggregation speed`.
+
+Timescale [continuous aggregates](https://docs.timescale.com/use-timescale/latest/continuous-aggregates/) solve both of theses problems. In summary the feature is a automatically refreshed materialized view.
+
+### Use case
+
+Lets use an aggregation query to generates [candlestick](https://en.wikipedia.org/wiki/Candlestick_chart) data that can be used to show a candlestick chart, calculating the `high`, `open`, `close` and `low` for prices given an interval:
+
+```SQL
+  SELECT
+    time_bucket('1 day', time) AS day,
+    symbol,
+    max(price) AS high,
+    first(price, time) AS open,
+    last(price, time) AS close,
+    min(price) AS low
+  FROM stocks_real_time srt
+  GROUP BY day, symbol
+  ORDER BY day DESC, symbol;
+```
+
+Now we can creates a continuoues aggregate:
+
+```SQL
+  CREATE MATERIALIZED VIEW stock_candlestick_daily
+  WITH (timescaledb.continuous) AS 
+  SELECT
+    time_bucket('1 day', time) AS day,
+    symbol,
+    max(price) AS high,
+    first(price, time) AS open,
+    last(price, time) AS close,
+    min(price) AS low
+  FROM stocks_real_time srt
+  GROUP BY day, symbol;
+```
+
+After a while we can query the mv:
+
+```SQL
+  SELECT * FROM stock_candlestick_daily
+  ORDER BY day DESC, symbol;
+```
+
+To inspect details about continuous aggregate:
+
+```SQL
+  SELECT * FROM timescaledb_information.continuous_aggregates;
+```
+
+### Policy
+
+In Timescale 1.7 and later, real time aggregates are enabled by default, always including the most recent data (respect the next scheduled refresh)
+
+We can set an automatic refresh [policy](https://docs.timescale.com/api/latest/continuous-aggregates/add_continuous_aggregate_policy/) to update the contunuous aggregate:
+
+```SQL
+  SELECT add_continuous_aggregate_policy('stock_candlestick_daily',
+    start_offset => INTERVAL '3 days',
+    end_offset => INTERVAL '1 hour',
+    scheduled_interval => INTERVAL '1 days'
+    );
+
+  --- to manually update given a period
+  CALL refresh_continuous_aggregate(
+    'stock_candlestick_daily',
+    now() - INTERVAL '1 week',
+    now()
+  );
+```
+
+This policy runs once a day. When it runs, it materializes data from between 3 days ago and 1 hour ago.

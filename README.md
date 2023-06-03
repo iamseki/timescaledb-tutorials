@@ -56,7 +56,7 @@
 
 </details>
 
-## Querying :scrol:
+## Querying :scroll:
 
 > Remember to be connected into container psql or some other pgsql client !!! `docker exec -it timescaledb psql -U postgres -h localhost -d stock_exchange`
 
@@ -181,3 +181,60 @@ We can set an automatic refresh [policy](https://docs.timescale.com/api/latest/c
 ```
 
 This policy runs once a day. When it runs, it materializes data from between 3 days ago and 1 hour ago.
+
+## Compression :small_blue_diamond:
+
+To enable compression uses `timescaledb.compress`, the orderby and segmentby will be default to time if not specified, more details on [compression docs](https://docs.timescale.com/use-timescale/latest/compression/).
+
+```SQL
+ALTER TABLE stocks_real_time SET (
+  timescaledb.compress, 
+  timescaledb.compress_orderby = 'time DESC', 
+  timescaledb.compress_segmentby = 'symbol'
+);
+
+--- to check compression_setings:
+SELECT * FROM timescaledb_information.compression_settings;
+```
+
+### Automatic Compression
+
+We can schedule a policy to [automatically compress](https://docs.timescale.com/api/latest/compression/add_compression_policy/) the data. For example, if you want to compress hypertable data that is older than two weeks, run:
+
+```SQL
+SELECT add_compression_policy('stocks_real_time', INTERVAL '2 weeks');
+--- TO SEE POLICY DETAILS:
+SELECT * FROM timescaledb_information.jobs;
+--- TO see Job Statistics:
+SELECT * FROM timescaledb_information.job_stats;
+```
+
+Compressed rows can't be updated or deleted!!1! So it's bets to compress aged or data is less likely to require updating..
+
+### Manual Compression
+
+When [compressing manually chunks](https://docs.timescale.com/api/latest/compression/compress_chunk/) is needed.
+
+An example to compress chunks that consist of data older than 2 weeks:
+
+```SQL
+SELECT compress_chunk(i, if_not_compressed=>true) -- if statement to not shows an error when it tries to compress an already compressed chunk!
+  FROM show_chunks('stocks_real_time', older_than => INTERVAL '2 weeks') i;
+```
+
+### Verifying Compression
+
+Check queries:
+
+```SQL
+SELECT 
+  pg_size_pretty(before_compression_total_bytes) as "before compression", 
+  pg_size_pretty(after_compression_total_bytes) as "after compression"
+FROM hypertable_compression_stats('stocks_real_time');
+```
+
+## Data Retention :clock1:
+
+> An intrisinc part of working with time-series data is that the relevance of data can diminish over time.
+
+This is a feature that I'm not interested but know it's possible to use [data retention policy](https://docs.timescale.com/getting-started/latest/data-retention/#create-a-data-retention-policy).

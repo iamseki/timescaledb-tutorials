@@ -20,5 +20,3 @@ docker cp tutorial_sample_company.csv timescaledb:/home/postgres/tutorial_sample
 
 docker exec timescaledb psql -U postgres -h localhost -d stock_exchange -c "\COPY stocks_real_time from './tutorial_sample_tick.csv' DELIMITER ',' CSV HEADER;"
 docker exec timescaledb psql -U postgres -h localhost -d stock_exchange -c "\COPY company from './tutorial_sample_company.csv' DELIMITER ',' CSV HEADER;"
-
-

@@ -18,20 +18,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var config api.Config
-
-	if err := envconfig.Process("nyc-taxi-app", &config); err != nil {
-		logger.Fatal("Error loading envconfig", zap.Any("config", config))
+	var apiConfig api.Config
+	if err := envconfig.Process("nyc-taxi-app", &apiConfig); err != nil {
+		logger.Fatal("Error loading API envconfig", zap.Any("apiConfig", apiConfig))
 	}
 
-	db, err := repository.NewPostgreSQL(&config, logger)
+	var repoConfig repository.Config
+	if err := envconfig.Process("nyc-taxi-app", &repoConfig); err != nil {
+		logger.Fatal("Error loading REPOSITORY envconfig", zap.Any("repoConfig", repoConfig))
+	}
+
+	repository, err := repository.NewPostgreSQL(&repoConfig, logger)
 	if err != nil {
 		logger.Fatal("error on repository.NewPostgreSQL", zap.Error(err))
 	}
 
-	db.Close()
-
-	app, err := api.New(logger, &config)
+	app, err := api.New(logger, &apiConfig, repository)
 	if err != nil {
 		logger.Fatal("error on api.New", zap.Error(err))
 	}

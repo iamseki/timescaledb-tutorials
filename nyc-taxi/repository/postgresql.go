@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"fmt"
 	"time"
 
-	"github.com/iamseki/timescaledb-tutorials/nyc-taxi/api"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
@@ -14,7 +14,7 @@ type PostgreRepository struct {
 	logger *zap.Logger
 }
 
-func NewPostgreSQL(config *api.Config, logger *zap.Logger) (Repository, error) {
+func NewPostgreSQL(config *Config, logger *zap.Logger) (Repository, error) {
 	db, err := sqlx.Connect("pgx", config.Database.URL)
 	if err != nil {
 		logger.Error("sqlx Connect error", zap.Error(err), zap.Any("config", config.Database))
@@ -28,6 +28,23 @@ func NewPostgreSQL(config *api.Config, logger *zap.Logger) (Repository, error) {
 	return &PostgreRepository{db, logger}, nil
 }
 
-func (r *PostgreRepository) Close() error {
+func (repository *PostgreRepository) RidesByDaySince(date string) ([]RidesByDaySinceResponse, error) {
+	response := []RidesByDaySinceResponse{}
+	err := repository.db.Select(&response, fmt.Sprintf(`
+		SELECT date_trunc('day', pickup_datetime) as day,
+		COUNT(*)
+		FROM rides
+		WHERE pickup_datetime < '%v'
+		GROUP BY day
+		ORDER BY day;
+	`, date))
+	if err != nil {
+		repository.logger.Error(fmt.Sprintf("Error on query RidesByDaySince %v", date), zap.Error(err))
+		return nil, err
+	}
+	return response, nil
+}
+
+func (repository *PostgreRepository) Close() error {
 	return nil
 }

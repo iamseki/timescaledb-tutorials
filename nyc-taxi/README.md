@@ -21,3 +21,11 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 
 - Run the script `./populate-db.sh`
 - This simple test must have an output: `docker exec timescaledb psql -U postgres -h localhost -d nyc_taxi_cab -c "SELECT * FROM rides LIMIT 5;"`
+
+### Run API
+
+- Just execute `go run main.go`
+
+## Routes ::
+
+- GET `http://localhost:5000/v1/rides/day/since?date=2023-01-01`

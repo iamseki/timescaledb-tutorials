@@ -1,2 +1,4 @@
 *.zip
 *.csv
+*.tar.gz
+*nyc*.sql

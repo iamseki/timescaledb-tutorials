@@ -1,5 +1,7 @@
 # Analyze NYC taxi cab data
 
+This project is a simple API to expose new york city taxi cab data using timescaledb with go programming language.
+
 ## Setup Environment :scroll:
 
 - `docker run -d --name timescaledb -p 5432:5432 -e POSTGRES_PASSWORD=password timescale/timescaledb-ha:pg14-latest`
@@ -11,7 +13,6 @@ CREATE DATABASE nyc_taxi_cab;
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 ```
 
-tables: 
 - `docker cp tables.sql timescaledb:/home/postgres/tables.sql`
 - `docker exec timescaledb psql -U postgres -h localhost -d nyc_taxi_cab -f tables.sql`
 - test connection: `docker exec -ti timescaledb psql -U postgres -h localhost -d nyc_taxi_cab`

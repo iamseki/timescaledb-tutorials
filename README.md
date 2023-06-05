@@ -9,3 +9,7 @@ This repository contains tutorials and use cases examples on how to setup and wo
 ### Get Started
 
 The *[get-started](get-started)* folder contains a brief introduction on how to setup timescaledb `dockerized` environment showing up some features with a simple example with just SQL stuff.
+
+### New York City Taxi Cab
+
+The *[nyc-taxi](nyc-taxi)* example has historical data from New York's yellow taxi network provided by [NYC TLC](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page) which is tracked over 200.000 vehicles making about 1 milion trips each day.

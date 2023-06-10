@@ -21,5 +21,5 @@ func (api *API) ridesByDay(c echo.Context) error {
 		api.logger.Fatal("error on api.repository.RidesByDaySince", zap.Error(err))
 	}
 
-	return c.JSON(http.StatusOK, &res)
+	return c.JSON(http.StatusOK, res)
 }

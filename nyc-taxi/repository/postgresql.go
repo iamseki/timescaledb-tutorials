@@ -45,6 +45,24 @@ func (repository *PostgreRepository) RidesByDaySince(date string) ([]RidesByDayS
 	return response, nil
 }
 
+func (repository *PostgreRepository) AverageFareSince(date string) ([]AverageFareSinceResponse, error) {
+	response := []AverageFareSinceResponse{}
+
+	err := repository.db.Select(&response, fmt.Sprintf(`
+		SELECT date_trunc('day', pickup_datetime)
+		AS day, avg(fare_amount)
+		FROM rides
+		WHERE pickup_datetime < '%v'
+		GROUP BY day
+		ORDER BY day;
+	`, date))
+	if err != nil {
+		repository.logger.Error(fmt.Sprintf("Error on query AverageFareSince %v", date), zap.Error(err))
+		return nil, err
+	}
+	return response, nil
+}
+
 func (repository *PostgreRepository) Close() error {
 	return nil
 }

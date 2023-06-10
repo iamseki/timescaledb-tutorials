@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (api *API) ridesByDaySince(c echo.Context) error {
+func (api *API) ridesByDay(c echo.Context) error {
 	date := c.QueryParam("date")
 
 	if date == "" {
@@ -16,7 +16,7 @@ func (api *API) ridesByDaySince(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	res, err := api.repository.RidesByDaySince(date)
+	res, err := api.repository.RidesByDay(date)
 	if err != nil {
 		api.logger.Fatal("error on api.repository.RidesByDaySince", zap.Error(err))
 	}

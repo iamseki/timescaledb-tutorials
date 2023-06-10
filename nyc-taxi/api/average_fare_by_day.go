@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (api *API) averageFareByDaySince(c echo.Context) error {
+func (api *API) averageFareByDay(c echo.Context) error {
 	date := c.QueryParam("date")
 
 	if date == "" {
@@ -16,7 +16,7 @@ func (api *API) averageFareByDaySince(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	res, err := api.repository.AverageFareSince(date)
+	res, err := api.repository.AverageFareByDay(date)
 	if err != nil {
 		api.logger.Fatal("error on api.repository.AverageFareSince", zap.Error(err))
 	}

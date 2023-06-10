@@ -28,8 +28,8 @@ func NewPostgreSQL(config *Config, logger *zap.Logger) (Repository, error) {
 	return &PostgreRepository{db, logger}, nil
 }
 
-func (repository *PostgreRepository) RidesByDaySince(date string) ([]RidesByDaySinceResponse, error) {
-	response := []RidesByDaySinceResponse{}
+func (repository *PostgreRepository) RidesByDay(date string) ([]RidesByDayResponse, error) {
+	response := []RidesByDayResponse{}
 	err := repository.db.Select(&response, fmt.Sprintf(`
 		SELECT date_trunc('day', pickup_datetime) as day,
 		COUNT(*)
@@ -39,14 +39,14 @@ func (repository *PostgreRepository) RidesByDaySince(date string) ([]RidesByDayS
 		ORDER BY day;
 	`, date))
 	if err != nil {
-		repository.logger.Error(fmt.Sprintf("Error on query RidesByDaySince %v", date), zap.Error(err))
+		repository.logger.Error(fmt.Sprintf("Error on query RidesByDay %v", date), zap.Error(err))
 		return nil, err
 	}
 	return response, nil
 }
 
-func (repository *PostgreRepository) AverageFareSince(date string) ([]AverageFareSinceResponse, error) {
-	response := []AverageFareSinceResponse{}
+func (repository *PostgreRepository) AverageFareByDay(date string) ([]AverageFareByDayResponse, error) {
+	response := []AverageFareByDayResponse{}
 
 	err := repository.db.Select(&response, fmt.Sprintf(`
 		SELECT date_trunc('day', pickup_datetime)
@@ -57,7 +57,7 @@ func (repository *PostgreRepository) AverageFareSince(date string) ([]AverageFar
 		ORDER BY day;
 	`, date))
 	if err != nil {
-		repository.logger.Error(fmt.Sprintf("Error on query AverageFareSince %v", date), zap.Error(err))
+		repository.logger.Error(fmt.Sprintf("Error on query AverageFare %v", date), zap.Error(err))
 		return nil, err
 	}
 	return response, nil

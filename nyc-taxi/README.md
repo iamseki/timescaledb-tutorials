@@ -28,5 +28,5 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 
 ## Routes ::
 
-- GET `http://localhost:5000/v1/rides/day/since?date=2023-01-01`
-- GET `http://localhost:5000/v1/rides/fare/day/since?date=2023-01-01`
+- GET `http://localhost:5000/v1/rides/day?date=2023-01-01`
+- GET `http://localhost:5000/v1/rides/fare/day?date=2023-01-01`

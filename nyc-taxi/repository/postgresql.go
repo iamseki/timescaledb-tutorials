@@ -63,6 +63,24 @@ func (repository *PostgreRepository) AverageFareByDay(date string) ([]AverageFar
 	return response, nil
 }
 
+func (repository *PostgreRepository) RidesByFareType(date string) ([]RidesByFareTypeResponse, error) {
+	response := []RidesByFareTypeResponse{}
+
+	err := repository.db.Select(&response, fmt.Sprintf(`
+		SELECT rates.description, COUNT(vendor_id) as num_trips
+		FROM rides
+		INNER JOIN rates ON rides.rate_code = rates.rate_code
+		WHERE pickup_datetime < '%v'
+		GROUP BY rates.description
+		ORDER BY LOWER(rates.description);
+	`, date))
+	if err != nil {
+		repository.logger.Error(fmt.Sprintf("Error on query RidesByFareType %v", date), zap.Error(err))
+		return nil, err
+	}
+	return response, nil
+}
+
 func (repository *PostgreRepository) Close() error {
 	return nil
 }

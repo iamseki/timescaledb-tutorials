@@ -106,6 +106,26 @@ func (repository *PostgreRepository) RidesByAirportsCodeResponse(date string, ai
 	return response, nil
 }
 
+func (repository *PostgreRepository) RidesByTimeBucket(date string, interval string) ([]RidesByTimeBucketResponse, error) {
+	response := []RidesByTimeBucketResponse{}
+
+	query := fmt.Sprintf(`
+	SELECT time_bucket('%v', pickup_datetime) as time_bucket,
+		count(*)
+	FROM rides
+	WHERE pickup_datetime < '%v'
+	GROUP BY time_bucket
+	ORDER BY time_bucket;
+	`, interval, date)
+
+	err := repository.db.Select(&response, query)
+	if err != nil {
+		repository.logger.Error("Error on query RidesByTimeBucketResponse", zap.Error(err))
+		return nil, err
+	}
+	return response, nil
+}
+
 func (repository *PostgreRepository) Close() error {
 	return nil
 }

@@ -23,10 +23,16 @@ type RidesByAirportsCodeResponse struct {
 	AveragePassengers string  `db:"avg_passengers" json:"averagePassengers"`
 }
 
+type RidesByTimeBucketResponse struct {
+	TimeBucket string `db:"time_bucket" json:"timeBucket"`
+	Rides      int    `db:"count" json:"rides"`
+}
+
 type Repository interface {
 	RidesByDay(date string) ([]RidesByDayResponse, error)
 	AverageFareByDay(date string) ([]AverageFareByDayResponse, error)
 	RidesByFareType(date string) ([]RidesByFareTypeResponse, error)
 	RidesByAirportsCodeResponse(date string, airportCodes string) ([]RidesByAirportsCodeResponse, error)
+	RidesByTimeBucket(date string, interval string) ([]RidesByTimeBucketResponse, error)
 	Close() error
 }

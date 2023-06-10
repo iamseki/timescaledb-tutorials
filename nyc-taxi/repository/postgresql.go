@@ -81,6 +81,31 @@ func (repository *PostgreRepository) RidesByFareType(date string) ([]RidesByFare
 	return response, nil
 }
 
+func (repository *PostgreRepository) RidesByAirportsCodeResponse(date string, airportCodes string) ([]RidesByAirportsCodeResponse, error) {
+	response := []RidesByAirportsCodeResponse{}
+
+	query := fmt.Sprintf(`
+	SELECT rates.description,
+		COUNT(vendor_id) AS num_trips,
+		AVG(dropoff_datetime - pickup_datetime) AS avg_trip_duration,
+		AVG(total_amount) AS avg_total,
+		AVG(passenger_count) AS avg_passengers
+	FROM rides
+	INNER JOIN rates on rates.rate_code = rides.rate_code
+	WHERE rides.rate_code IN(%v) AND pickup_datetime < '%v'
+	GROUP BY rates.description
+	ORDER BY rates.description;
+	`, airportCodes, date)
+	repository.logger.Info("Query", zap.String("query", query))
+
+	err := repository.db.Select(&response, query)
+	if err != nil {
+		repository.logger.Error(fmt.Sprintf("Error on query RidesByAirportsCodeResponse date => %v, airportCodes => %v", airportCodes, date), zap.Error(err))
+		return nil, err
+	}
+	return response, nil
+}
+
 func (repository *PostgreRepository) Close() error {
 	return nil
 }

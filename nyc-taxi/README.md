@@ -31,3 +31,4 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 - GET `http://localhost:5000/v1/rides/day?date=2023-01-01`
 - GET `http://localhost:5000/v1/rides/fare/day?date=2023-01-01`
 - GET `http://localhost:5000/v1/rides/fare/type?date=2023-01-01`
+- GET `http://localhost:5000/v1/rides/airports?date=2023-01-01&airportsCode=1,2`

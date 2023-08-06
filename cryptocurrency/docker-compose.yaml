@@ -6,10 +6,8 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      PGDATA: /data/postgres
     volumes:
-      - "./postgres.conf:/etc/postgresql/postgresql.conf"
-      - postgres:/data/postgres
+      - postgres:/home/postgres/pgdata/data
     ports:
       - "5432:5432"
   
@@ -26,4 +24,3 @@ services:
 
 volumes:
   postgres:
-  postgres_data:

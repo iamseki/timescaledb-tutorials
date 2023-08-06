@@ -47,7 +47,7 @@ func NewAppLogger() *zap.Logger {
 
 func main() {
 	fx.New(
-		fx.Provide(
+		fx.Provide( // Provide must receives every constructors and related dependencies, the fx will resolve them all
 			NewAppLogger,
 			api.New,
 			core.New,
@@ -56,7 +56,7 @@ func main() {
 				fx.As(new(repository.Repository)),
 			),
 		),
-		fx.WithLogger(FxLogger),
-		fx.Invoke(NewHTTPServer),
+		fx.WithLogger(FxLogger),  // overriding the default logger
+		fx.Invoke(NewHTTPServer), // using the fx life cycle to controls gracefull shutdown and app startup as well
 	).Run()
 }

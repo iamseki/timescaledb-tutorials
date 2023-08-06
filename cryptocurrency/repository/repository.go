@@ -13,5 +13,6 @@ type Repository interface {
 	TxVolumeXUSDByHour(days int) ([]TxVolume, error)
 	BlockVolumeTxXMiningFee(days int) ([]BlockVolume, error)
 	BlockVolumeXMiningFee(days int) ([]BlockVolume, error)
+	MinerReveueByHour(days int) ([]MinerRevenue, error)
 	Close() error
 }

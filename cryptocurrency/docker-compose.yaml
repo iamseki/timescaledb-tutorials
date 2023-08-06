@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      PGDATA: /data/postgres
+    volumes:
+      - "./postgres.conf:/etc/postgresql/postgresql.conf"
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+  
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - "COLLECTOR_OTLP_ENABLED=true"
+    ports:
+      - 16686:16686 # dashboard
+      - 16685:16685
+      - 14250:14250
+      - 4317:4317 # otlp grpc
+      - 4318:4318 # otlp http
+
+volumes:
+  postgres:
+  postgres_data:

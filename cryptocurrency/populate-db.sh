@@ -19,6 +19,6 @@ else
   unzip bitcoin_sample.zip
 fi
 
-docker cp tutorial_bitcoin_sample.csv cryptocurrency-timescaledb-1:/tutorial_bitcoin_sample.csv
+docker cp tutorial_bitcoin_sample.csv cryptocurrency-timescaledb-1:/home/postgres/tutorial_bitcoin_sample.csv
 
 docker exec cryptocurrency-timescaledb-1 psql -U postgres -h localhost -c "\COPY transactions from './tutorial_bitcoin_sample.csv' DELIMITER ',' CSV HEADER;"

@@ -68,9 +68,13 @@ func (api *API) Start() error {
 	// ROUTES
 	api.logger.Info("Initializing routes")
 	api.server.GET("/v1/healthcheck", api.healthcheck)
-	api.server.GET("/v1/blocks/recent", api.listRecentBlocks)
+
 	api.server.GET("/v1/transactions/volume/last", api.TxVolumeXFeesByHourLast)
 	api.server.GET("/v1/transactions/volume/usd/last", api.TxVolumeXUSDByHourLast)
+
+	api.server.GET("/v1/blocks/recent", api.listRecentBlocks)
+	api.server.GET("/v1/blocks/mining-fee/transactions/last", api.BlockVolumeTxXMiningFeeByHourLast)
+	api.server.GET("/v1/blocks/mining-fee/last", api.BlockVolumeXMiningFeeByHourLast)
 
 	api.logger.Info(fmt.Sprintf("Initializing HTTP server on PORT: %v", api.config.Port))
 	return api.server.Start(":" + api.config.Port)

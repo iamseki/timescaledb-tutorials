@@ -16,9 +16,11 @@ Covered concepts:
 
 ## Routes
 
-| Endpoint                          | Method        | Description                                                             | Response          |
-| ----------------------------------| --------------| ------------------------------------------------------------------------| ------------------|
-| `/v1/healthcheck`                 | `GET`         | Basic healthcheck                                                       | `200` `500`       |
-| `/v1/blocks/recent`               | `GET`         | List recent blocks given a required limit (querystring)                 | `200` `400` `500` |
-| `/v1/transactions/volume/last`    | `GET`         | List transactions volume x fees last hours given a day (querystring)    | `200` `400` `500` |
-| `/v1/transactions/volume/usd/last`| `GET`         | List transactions volume x usd rate last hours given a day (querystring)| `200` `400` `500` |
+| Endpoint                                    | Method    | Description                                                             | Response          |
+| --------------------------------------------| ----------| ------------------------------------------------------------------------| ------------------|
+| `/v1/healthcheck`                           | `GET`     | Basic healthcheck                                                       | `200` `500`       |
+| `/v1/blocks/recent`                         | `GET`     | List recent blocks given a required limit (querystring)                 | `200` `400` `500` |
+| `/v1/transactions/volume/last`              | `GET`     | List transactions volume x fees last hours given a day interval         | `200` `400` `500` |
+| `/v1/transactions/volume/usd/last`          | `GET`     | List transactions volume x usd rate last hours given a day interval     | `200` `400` `500` |
+| `/v1/blocks/mining-fee/transactions/last`   | `GET`     | List blocks volume x trx x mining fee last hours given a day interval   | `200` `400` `500` |
+| `/v1/blocks/mining-fee/last`                | `GET`     | List blocks volume x weight x mining fee last hours given a day interval| `200` `400` `500` |

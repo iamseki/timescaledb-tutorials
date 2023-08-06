@@ -11,5 +11,7 @@ type Repository interface {
 	ListRecentBlocks(limit int) ([]RecentBlock, error)
 	TxVolumeXFeesByHour(days int) ([]TxVolume, error)
 	TxVolumeXUSDByHour(days int) ([]TxVolume, error)
+	BlockVolumeTxXMiningFee(days int) ([]BlockVolume, error)
+	BlockVolumeXMiningFee(days int) ([]BlockVolume, error)
 	Close() error
 }

@@ -16,7 +16,7 @@ Covered concepts:
 
 ## Routes
 
-| Endpoint                                    | Method    | Description                                                             | Response          |
+| Endpoint                                    | Method    | Description                                                             | Response Code     |
 | --------------------------------------------| ----------| ------------------------------------------------------------------------| ------------------|
 | `/v1/healthcheck`                           | `GET`     | Basic healthcheck                                                       | `200` `500`       |
 | `/v1/blocks/recent`                         | `GET`     | List recent blocks given a required limit (querystring)                 | `200` `400` `500` |
@@ -24,3 +24,5 @@ Covered concepts:
 | `/v1/transactions/volume/usd/last`          | `GET`     | List transactions volume x usd rate last hours given a day interval     | `200` `400` `500` |
 | `/v1/blocks/mining-fee/transactions/last`   | `GET`     | List blocks volume x trx x mining fee last hours given a day interval   | `200` `400` `500` |
 | `/v1/blocks/mining-fee/last`                | `GET`     | List blocks volume x weight x mining fee last hours given a day interval| `200` `400` `500` |
+| `/v1/mining/reward/last`                    | `GET`     | List mining reward by fee last hours given a day interval               | `200` `400` `500` |
+| `/v1/mining/fees/last`                      | `GET`     | List mining fee by block weight last hours given a day interval         | `200` `400` `500` |

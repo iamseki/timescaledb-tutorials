@@ -76,7 +76,9 @@ func (api *API) Start() error {
 	api.server.GET("/v1/blocks/mining-fee/transactions/last", api.BlockVolumeTxXMiningFeeByHourLast)
 	api.server.GET("/v1/blocks/mining-fee/last", api.BlockVolumeXMiningFeeByHourLast)
 
-	api.server.GET("/v1/miners-revenue/last", api.MinersRevenueByHourLast)
+	api.server.GET("/v1/mining/reward/last", api.MinersRewardByHourLast)
+	api.server.GET("/v1/mining/fees/last", api.MiningBlockWeightXFeeByHourLast)
+	api.server.GET("/v1/mining/revenue/last", api.MiningRevenueByHourLast)
 
 	api.logger.Info(fmt.Sprintf("Initializing HTTP server on PORT: %v", api.config.Port))
 	return api.server.Start(":" + api.config.Port)

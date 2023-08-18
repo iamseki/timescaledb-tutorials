@@ -16,5 +16,6 @@ type Repository interface {
 	MinersRewardByHour(days int) ([]MiningReward, error)
 	MiningBlockWeightXFeeByHour(days int) ([]MiningFee, error)
 	MiningRevenueByHour(days int) ([]MiningRevenue, error)
+	InsertTransaction(t Transaction) error
 	Close() error
 }

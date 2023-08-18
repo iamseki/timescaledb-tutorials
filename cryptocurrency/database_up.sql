@@ -14,6 +14,21 @@ CREATE TABLE IF NOT EXISTS transactions (
    details JSONB
 );
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE IF NOT EXISTS outbox_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  aggregatetype VARCHAR(255) NOT NULL CHECK (
+    aggregatetype IN (
+    'INSERTED',
+    'UPDATED',
+    'DELETED'
+  )),
+  aggregateid VARCHAR(255) NOT NULL,
+  payload JSONB NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT NOW()  
+);
+
 SELECT create_hypertable('transactions', 'time');
 
 CREATE INDEX IF NOT EXISTS hash_idx ON public.transactions USING HASH (hash);

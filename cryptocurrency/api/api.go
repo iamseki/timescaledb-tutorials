@@ -80,6 +80,8 @@ func (api *API) Start() error {
 	api.server.GET("/v1/mining/fees/last", api.MiningBlockWeightXFeeByHourLast)
 	api.server.GET("/v1/mining/revenue/last", api.MiningRevenueByHourLast)
 
+	api.server.POST("/v1/transaction", api.insertTransaction)
+
 	api.logger.Info(fmt.Sprintf("Initializing HTTP server on PORT: %v", api.config.Port))
 	return api.server.Start(":" + api.config.Port)
 }

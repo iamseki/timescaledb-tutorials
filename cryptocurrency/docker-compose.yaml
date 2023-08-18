@@ -10,7 +10,31 @@ services:
       - postgres:/home/postgres/pgdata/data
     ports:
       - "5432:5432"
-  
+
+  pulsar:
+    image: apachepulsar/pulsar:2.10.2
+    command: "bin/pulsar standalone"
+    ports:
+        - '7128:8080'
+        - '6650:6650'
+    volumes:
+        - pulsar_data:/pulsar/data
+        - pulsar_conf:/pulsar/conf
+
+  debezium:
+    image: debezium/server
+    restart: on-failure
+    links:
+        - "timescaledb"
+        - "pulsar"
+    ports:
+        - '7080:8080'
+    volumes:
+        - '$PWD/debezium:/debezium/conf'
+        - debezium_data:/debezium/data
+    depends_on:
+      - timescaledb
+
   jaeger:
     image: jaegertracing/all-in-one:latest
     environment:
@@ -24,3 +48,6 @@ services:
 
 volumes:
   postgres:
+  debezium_data:
+  pulsar_data:
+  pulsar_conf:

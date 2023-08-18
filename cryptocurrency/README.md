@@ -7,7 +7,7 @@ Covered concepts:
 - Dependency injection using [fx](https://github.com/uber-go/fx)
 - Tracing using [otel](https://opentelemetry.io/docs/instrumentation/go/)
 - Querying analytical data using [timescaleDB](https://docs.timescale.com/api/latest/)
-- Integrates CDC on a timescaleDB instance
+- Integrates CDC on a timescaleDB instance (Todo Documentation)
 
 ## Initialize
 
